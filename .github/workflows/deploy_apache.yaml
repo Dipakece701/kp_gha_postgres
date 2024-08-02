@@ -1,4 +1,4 @@
-name: Deploy PostgreSQL
+name: Deploy Apache
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Install expect
         run: sudo apt-get update && sudo apt-get install -y expect
 
-      - name: Install PostgreSQL via SSH
+      - name: Install Apache via SSH
         run: |
           expect << EOF
           spawn ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@13.93.199.95
@@ -27,13 +27,11 @@ jobs:
           expect "password for ${{ secrets.SSH_USERNAME }}:"
           send "${{ secrets.SSH_PASSWORD }}\r"
           expect "$ "
-          send "sudo apt install -y postgresql postgresql-contrib\r"
+          send "sudo apt install -y apache2\r"
           expect "$ "
-          send "sudo systemctl start postgresql\r"
+          send "sudo systemctl start apache2\r"
           expect "$ "
-          send "sudo systemctl enable postgresql\r"
-          expect "$ "
-          send "sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'Posgres123456';\"\r"
+          send "sudo systemctl enable apache2\r"
           expect "$ "
           send "exit\r"
           expect eof
